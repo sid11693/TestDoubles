@@ -33,8 +33,8 @@ function boot()
 
 	var bodyString = JSON.stringify({
 	    Node: "td",
-	    Address: "localhost",
-	    Service: {"Service": "tdhost", "Port": process.env.TD_PORT || 5050}
+	    Address: process.env.ip,
+	    Service: {"Service": "tdhost", "Port": parseInt(process.env.TD_PORT) || 5050}
 	});
 
 	//remember to worry about the bodyString.length later down the road, use buffers 

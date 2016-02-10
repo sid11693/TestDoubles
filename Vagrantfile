@@ -16,6 +16,7 @@
     export TD_HOST=http://localhost:5050
     export TD_PORT=5050
     export PATH=${TD_HOME}/bin:$PATH
+    export ip=$(ifconfig eth1 | grep 'inet addr:' | cut -d: -f2| awk '{ print $1}')
 
     echo "export TD_USER=td" > /home/vagrant/.bash_aliases
     echo "export TD_ROOT=/opt/testdoubles" >> /home/vagrant/.bash_aliases
@@ -23,6 +24,8 @@
     echo "export TD_HOST=http://localhost:5050"  >> /home/vagrant/.bash_aliases
     echo "export TD_PORT=5050"  >> /home/vagrant/.bash_aliases
     echo "export PATH=${TD_HOME}/bin:$PATH"  >> /home/vagrant/.bash_aliases
+    echo "export ip=$(ifconfig eth1 | grep 'inet addr:' | cut -d: -f2| awk '{ print $1}')"  >> /home/vagrant/.bash_aliases
+    echo "export ip=$(ifconfig eth1 | grep 'inet addr:' | cut -d: -f2| awk '{ print $1}')"  >> ~/.profile
    
     echo Fetching Consul...
     cd /tmp/
@@ -45,9 +48,8 @@
     chmod 777 ${TD_HOME}/testdoubles
     chmod 777 ${TD_HOME}/logs
     cd ${TD_ROOT}
-    npm install testdoubles --production
+    npm install testdoubles@devtest
     cd ${TD_HOME}
-    tdctl start
 
   SCRIPT
 
