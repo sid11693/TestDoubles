@@ -128,12 +128,12 @@ function postRequest(testDoubleDefinition, reply)
 
 			  	utils.logger.info('[' + data.name + ']' + '  testdouble port for ' + '\'' + data.name + '\'' + ' is ' + data.port);
 				var testDoubleName = data.name;
-				data = JSON.stringify(data, null , 4);
+				data = "{\"service\": "+JSON.stringify(data, null , 4)+"}";
 
 				var object = 
 				{
 					"contents": data,
-					"path": __dirname + '/../testdoubles/' + testDoubleName + '.json',
+					"path": '/../testdoubles/' + testDoubleName + '.json',
 				};
 
 				utils.save(object, 'file');

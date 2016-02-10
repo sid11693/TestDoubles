@@ -3,42 +3,10 @@
 # Maintainer: Rajesh Raheja
 # November 2015
 
-Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/trusty64"
 
-  config.vm.synced_folder ".", "/vagrant"
-
-  config.vm.provider "virtualbox" do |v|
-    host = RbConfig::CONFIG['host_os']
-    v.gui = false
-
-    # Optimization credits to https://stefanwrobel.com/how-to-make-vagrant-performance-not-suck
-    # Give VM 1/4 system memory & access to half of the cpu cores on the host
-    if host =~ /darwin/
-      cpus = `sysctl -n hw.ncpu`.to_i / 2
-      # sysctl returns Bytes and we need to convert to MB
-      mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
-    elsif host =~ /linux/
-      cpus = `nproc`.to_i / 2
-      # meminfo shows KB and we need to convert to MB
-      mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 4
-    else # doesn't work on Windows
-      cpus = 2
-      mem = 1024
-    end
-
-    v.customize ["modifyvm", :id, "--memory", mem]
-    v.customize ["modifyvm", :id, "--cpus", cpus]
-    v.customize ["modifyvm", :id, "--vram", 16]
-  end
-
-  config.push.define "atlas" do |push|
-    push.app = "devopshub/testdoubles"
-  end
-
-  config.vm.provision "shell", inline: <<-SHELL
+  $script = <<-SCRIPT
     sudo apt-get update
-    sudo apt-get install -y nodejs npm wget curl
+    sudo apt-get install -y nodejs npm wget curl unzip
     sudo rm -rf /var/lib/apt/lists/*
     sudo ln -s /usr/bin/nodejs /usr/bin/node
     sudo npm install -g npm
@@ -56,6 +24,16 @@ Vagrant.configure(2) do |config|
     echo "export TD_PORT=5050"  >> /home/vagrant/.bash_aliases
     echo "export PATH=${TD_HOME}/bin:$PATH"  >> /home/vagrant/.bash_aliases
    
+    echo Fetching Consul...
+    cd /tmp/
+    wget https://releases.hashicorp.com/consul/0.6.1/consul_0.6.1_linux_amd64.zip - O consul.zip
+    echo Installing Consul...
+    unzip consul_0.6.1_linux_amd64.zip
+    sudo chmod +x consul
+    sudo mv consul /usr/bin/consul
+    sudo mkdir /etc/consul.d
+    sudo chmod a+w /etc/consul.d
+
     rm -rf ${TD_ROOT} 
     mkdir -p ${TD_HOME}/testdoubles
     mkdir -p ${TD_HOME}/logs
@@ -70,5 +48,21 @@ Vagrant.configure(2) do |config|
     npm install testdoubles --production
     cd ${TD_HOME}
     tdctl start
-  SHELL
+
+  SCRIPT
+
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.network "private_network", type: "dhcp"
+  
+      
+
+config.vm.provision "shell", inline: $script
+
+  config.vm.define "n2" do |n2|
+      n2.vm.hostname = "n2"
+
+
+  end
 end

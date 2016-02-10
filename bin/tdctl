@@ -28,6 +28,65 @@ function boot()
 	});
 
     fs.writeFileSync(__dirname + '/../td.pid', process.pid.toString());
+
+    var http = require('http');
+
+	var bodyString = JSON.stringify({
+	    Node: "td",
+	    Address: "localhost",
+	    Service: {"Service": "tdhost", "Port": process.env.TD_PORT || 5050}
+	});
+
+	//remember to worry about the bodyString.length later down the road, use buffers 
+	var headers = {
+	    'Content-Type': 'application/json'
+	    // 'Content-Length': bodyString.length
+	};
+
+	var options = {
+	    host: '127.0.0.1',
+	    path: '/v1/catalog/register',
+	    port: 8500,
+	    method: 'PUT',
+	    headers: headers
+	};
+
+	console.log(bodyString);
+
+	// var callback = function(response) 
+	// {
+	// 	var str = '';
+
+	// 	//another chunk of data has been recieved, so append it to `str`
+	// 	response.on('data', function(chunk) {
+	// 		str += chunk;
+	// 	});
+
+	// 	//the whole response has been recieved, so we just print it out here
+	// 	response.on('end', function() {
+	// 		console.log(str);
+	// 	});
+	// };
+
+	var request = http.request(options, function(res) {
+
+		var str = '';
+
+		res.on('data', function(chunk) {
+			str += chunk;
+		});
+
+		res.on('end', function() {
+			console.log(str);
+		});
+
+	});
+
+    // http.request(options, callback).end();
+    request.write(bodyString);
+
+    request.end();
+
 }
 
 /**

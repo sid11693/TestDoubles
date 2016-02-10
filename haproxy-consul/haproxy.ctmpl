@@ -1,0 +1,33 @@
+global
+    daemon
+    maxconn 256
+
+defaults
+    mode    http
+    retries 3
+    option redispatch
+    maxconn 2000
+    timeout connect     5000
+    timeout client      50000  
+    timeout server      50000
+    option httpclose
+
+frontend http-in
+    bind *:7060
+    acl site path_beg /site
+    use_backend www if site
+    default_backend mounte
+
+backend mounte {{range service "tdhost"}}
+   balance roundrobin
+   server s2 {{.Address}}:2525{{end}}
+
+backend www {{range service "tdhost"}}
+   balance roundrobin
+   server s2 {{.Address}}:{{.Port}}{{end}}
+   # provide a maintenance page functionality, only used when all other servers are down
+   # server load1 localhost:8080 backup
+
+listen admin
+    bind *:8080
+    stats enable
