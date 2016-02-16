@@ -15,6 +15,8 @@
     export TD_HOME=${TD_ROOT}/node_modules/testdoubles
     export TD_HOST=http://localhost:5050
     export TD_PORT=5050
+    export MB_HOST=172.20.20.10
+    export MB_PORT=2525
     export PATH=${TD_HOME}/bin:$PATH
     export ip=$(ifconfig eth1 | grep 'inet addr:' | cut -d: -f2| awk '{ print $1}')
 
@@ -26,6 +28,8 @@
     echo "export PATH=${TD_HOME}/bin:$PATH"  >> /home/vagrant/.bash_aliases
     echo "export ip=$(ifconfig eth1 | grep 'inet addr:' | cut -d: -f2| awk '{ print $1}')"  >> /home/vagrant/.bash_aliases
     echo "export ip=$(ifconfig eth1 | grep 'inet addr:' | cut -d: -f2| awk '{ print $1}')"  >> ~/.profile
+    echo "export MB_HOST=172.20.20.10"  >> /home/vagrant/.bash_aliases
+    echo "export MB_PORT=2525"  >> /home/vagrant/.bash_aliases
    
     echo Fetching Consul...
     cd /tmp/
@@ -50,6 +54,8 @@
     cd ${TD_ROOT}
     npm install testdoubles@devtest
     cd ${TD_HOME}
+    consul agent -data-dir /tmp/consul -node=agent-two -bind=$ip -config-dir /etc/consul.d -join="172.20.20.10" 
+    
 
   SCRIPT
 

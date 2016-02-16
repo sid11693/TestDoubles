@@ -25,10 +25,16 @@ function boot()
 	}
 	server.start(function () {
 	    console.log('TestDoubles' + ' v' + packageFile.version + ' ready to roll at ' + server.info.uri + ' with logs at ' + __dirname + '/../logs/td.log');
+	    if(singleMode)
+			{
+			console.log('Homepage at ' + (process.env.ip||"localhost") + ':' + (process.env.TD_PORT||5050));
+			}
 	});
 
     fs.writeFileSync(__dirname + '/../td.pid', process.pid.toString());
 
+    if(!singleMode)
+    {
     var http = require('http');
 
 	var bodyString = JSON.stringify({
@@ -86,6 +92,7 @@ function boot()
     request.write(bodyString);
 
     request.end();
+}
 
 }
 
@@ -167,8 +174,8 @@ switch(process.argv[2])
 	case 'start':
 	case undefined:
 		require('../node_modules/mountebank/bin/mb');
-		boot();
 		singleMode = true;
+		boot();
 		break;
 
 	case 'start-server':
