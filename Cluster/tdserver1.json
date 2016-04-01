@@ -1,0 +1,1 @@
+{"service": {"name": "tdhost", "address": "localhost", "tags": ["serverone"], "port": 5050}} 

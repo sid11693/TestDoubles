@@ -38,7 +38,7 @@ function boot()
     var http = require('http');
 
 	var bodyString = JSON.stringify({
-	    Node: "td",
+	    Node: server.info.uri,
 	    Address: process.env.ip,
 	    Service: {"Service": "tdhost", "Port": parseInt(process.env.TD_PORT) || 5050}
 	});

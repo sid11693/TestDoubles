@@ -1,5 +1,0 @@
-template {
-   source = "/vagrant/haproxy.ctmpl"
-   destination = "/vagrant/haproxy.cfg"
-   command = "haproxy -f /vagrant/haproxy.cfg -sf $(pidof haproxy) &"
-}

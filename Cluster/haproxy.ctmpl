@@ -18,9 +18,9 @@ frontend http-in
     use_backend www if site
     default_backend mounte
 
-backend mounte {{range service "tdhost"}}
+backend mounte 
    balance roundrobin
-   server s2 {{.Address}}:2525{{end}}
+   server s2 172.20.20.10:2525
 
 backend www {{range service "tdhost"}}
    balance roundrobin

@@ -1,0 +1,25 @@
+FROM alpine
+MAINTAINER Ilkka Anttonen version: 0.3
+ 
+ENV CONSUL_TEMPLATE_VERSION=0.10.0
+
+# Updata wget to get support for SSL
+RUN apk --update add haproxy wget unzip curl
+
+# Download consul-template
+RUN ( wget --no-check-certificate https://github.com/hashicorp/consul-template/releases/download/v${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.tar.gz -O /tmp/consul_template.tar.gz && gunzip /tmp/consul_template.tar.gz && cd /tmp && tar xf /tmp/consul_template.tar && cd /tmp/consul-template* && mv consul-template /usr/bin && rm -rf /tmp/* )
+
+RUN cd /tmp
+RUN ( wget --no-check-certificate https://releases.hashicorp.com/consul/0.6.1/consul_0.6.1_linux_amd64.zip )
+RUN unzip consul_0.6.1_linux_amd64.zip
+RUN chmod +x consul && \
+    mv consul /usr/bin/consul && \
+    mkdir /etc/consul.d && \
+    chmod a+w /etc/consul.d
+
+COPY haproxy.json haproxy.json
+COPY haproxy.ctmpl haproxy.ctmpl
+COPY run.sh /tmp/run.sh
+COPY tdserver1.json /etc/consul.d/tdserver1.json
+EXPOSE 7060
+CMD ["sh", "/tmp/run.sh"]

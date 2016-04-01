@@ -54,7 +54,7 @@
     cd ${TD_ROOT}
     npm install testdoubles@devtest
     cd ${TD_HOME}
-    consul agent -data-dir /tmp/consul -node=agent-two -bind=$ip -config-dir /etc/consul.d -join="172.20.20.10" 
+    consul agent -data-dir /tmp/consul -node=$ip -bind=$ip -config-dir /etc/consul.d -join="172.20.20.10" 
     
 
   SCRIPT
