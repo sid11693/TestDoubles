@@ -1,5 +1,5 @@
 FROM alpine
-MAINTAINER Ilkka Anttonen version: 0.3
+MAINTAINER Rajesh Raheja
  
 ENV CONSUL_TEMPLATE_VERSION=0.10.0
 

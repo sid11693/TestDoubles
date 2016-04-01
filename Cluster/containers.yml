@@ -1,0 +1,15 @@
+consul:
+  build: .
+  dockerfile: Dockerfile_consul
+  net: host
+td:
+  build: .
+  net: host
+  volumes_from:
+    - mountebank
+mountebank:
+  build: .
+  dockerfile: Dockerfile_mb
+  net: host
+  volumes_from: 
+   - consul

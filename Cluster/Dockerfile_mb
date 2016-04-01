@@ -1,5 +1,5 @@
 FROM node:0.10
-MAINTAINER Sid Sharma
+MAINTAINER Rajesh Raheja
 
 EXPOSE 2525
 RUN npm install -g mountebank --production
